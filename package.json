@@ -1,6 +1,24 @@
 {
-  "version": 1.0.1
+  "name": "fileorganizer",
+  "version": "1.0.2",
+  "description": "Used to organizer the files in your download folder by extension type.",
+  "main": "index.js",
   "dependencies": {
-    "prompt-sync": "^4.2.0"
-  }
+    "ansi-regex": "^4.1.1",
+    "prompt-sync": "^4.2.0",
+    "strip-ansi": "^5.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GioRamos214/File-Organizer-2.git"
+  },
+  "author": "Giovanni Ramos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GioRamos214/File-Organizer-2/issues"
+  },
+  "homepage": "https://github.com/GioRamos214/File-Organizer-2#readme"
 }
