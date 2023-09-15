@@ -4,15 +4,21 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-function createDirectory(directoryPath, directoryName) {
-  const newDirectoryPath = require('path').join(directoryPath, directoryName);
-  if (!fs.existsSync(newDirectoryPath)) {
-    fs.mkdirSync(newDirectoryPath);
-    console.log(`Created the "${directoryName}" directory in`, directoryPath);
-  } else {
-    console.log(`The "${directoryName}" directory name already exists in`, directoryPath);
-  }
+// Function to remove dots (.) from directory names in 'Downloads' folder.
+function removeDotsFromDirectoryName(downloadsFolderPath) {
+  const directories = fs.readdirSync(downloadsFolderPath, {withFileTypes: true});
+
+  directories.forEach((dir) => {
+    if(dir.isDirectory() && dir.name.startsWith('.')) {
+      const currentDirectory = path.join(downloadsFolderPath, dir.name);
+      const newDirectory = path.join(downloadsFolderPath, dir.name.replace(/^\./, ''));
+
+      fs.renameSync(currentDirectory, newDirectory);
+      console.log(`Removed dot from directory name: '${dir.name}'`);
+    }
+  });
 }
+
 
 function organizeDownloads(downloadsFolderPath) {
   // Check if 'Downloads' folder exists
@@ -20,6 +26,10 @@ function organizeDownloads(downloadsFolderPath) {
     console.log("The 'Downloads' folder was not found.");
     return;
   }
+
+  // Remove dots from directory names.
+  removeDotsFromDirectoryName(downloadsFolderPath);
+
 
   const files = fs.readdirSync(downloadsFolderPath);
 
@@ -36,26 +46,29 @@ function organizeDownloads(downloadsFolderPath) {
       return;
     }
 
+    // Clean up the file extension to remove leading dots.
+    const cleanedFileExtension = fileExtension.replace(/^\./, '');
+
     // Create a directory for the file extension if it doesn't exist.
-    if (!extensionDirectories[fileExtension]) {
-      const extensionDirectory = path.join(downloadsFolderPath, fileExtension);
+    if (!extensionDirectories[cleanedFileExtension]) {
+      const extensionDirectory = path.join(downloadsFolderPath, cleanedFileExtension);
 
       // Check if the directory already exists before attempting to create it.
       if (!fs.existsSync(extensionDirectory)) {
         fs.mkdirSync(extensionDirectory);
-        extensionDirectories[fileExtension] = extensionDirectory;
-        console.log(`Created '${fileExtension}' directory.`);
+        extensionDirectories[cleanedFileExtension] = extensionDirectory;
+        console.log(`Created '${cleanedFileExtension}' directory.`);
       } else {
         // Directory already exists, update the dictionary.
-        extensionDirectories[fileExtension] = extensionDirectory;
+        extensionDirectories[cleanedFileExtension] = extensionDirectory;
       }
     }
 
     // Move the file to the appropriate directory.
-    const destinationPath = path.join(extensionDirectories[fileExtension], fileName);
+    const destinationPath = path.join(extensionDirectories[cleanedFileExtension], fileName);
     fs.renameSync(path.join(downloadsFolderPath, file), destinationPath);
 
-    console.log(`Moved '${fileName}' to '${fileExtension}' folder`);
+    console.log(`Moved '${fileName}' to '${cleanedFileExtension}' folder`);
   });
 }
 
