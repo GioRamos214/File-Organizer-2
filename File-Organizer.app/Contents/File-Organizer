@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/bin/env node /Users/giovanni/Documents/File-Organizer-2/index.js 2> error.log
